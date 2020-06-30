@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -26,14 +27,14 @@ namespace UnityWebGLStaticFileServer
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseRouting();
+            app.UseDefaultFiles();
 
-            app.UseEndpoints(endpoints =>
+            var provider = new FileExtensionContentTypeProvider();
+            provider.Mappings[".unityweb"] = "application/octet-stream";
+
+            app.UseStaticFiles(new StaticFileOptions
             {
-                endpoints.MapGet("/", async context =>
-                {
-                    await context.Response.WriteAsync("Hello World!");
-                });
+                ContentTypeProvider = provider
             });
         }
     }
